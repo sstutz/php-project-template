@@ -1,0 +1,14 @@
+version: '3'
+services:
+  php:
+    image: app/php:7.2-fpm
+    build:
+      context: ./php
+      args:
+        APP_ENV: "${APP_ENV}"
+    environment:
+      APP_ENV: "${APP_ENV}"
+    ports:
+      - "9000:9000"
+
+# vim: tabstop=2:softtabstop=0:expandtab:shiftwidth=2:smarttab

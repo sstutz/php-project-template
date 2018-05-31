@@ -1,0 +1,48 @@
+{
+	"name": "sstutz/php-boilerplate",
+	"description": "PHP Boilerplate",
+	"keywords": [],
+	"license": "MIT",
+	"type": "project",
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "require-dev": {
+        "ext-ast": "*",
+        "friendsofphp/php-cs-fixer": "^2.11",
+        "infection/infection": "^0.8.2",
+        "phan/phan": "^0.12.10",
+        "phpmd/phpmd": "^2.6",
+        "phpunit/phpunit": "^7.1",
+        "squizlabs/php_codesniffer": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/App",
+            "ComposerScripts\\": "composer"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "pre-install-cmd": [],
+        "post-install-cmd": [
+            "ComposerScripts\\App::postInstall"
+        ],
+        "pre-update-cmd": [],
+        "post-update-cmd": [],
+        "pre-package-install": [],
+        "post-package-install": [],
+        "pre-package-update": [],
+        "post-package-update": [],
+        "pre-package-uninstall": [],
+        "post-package-uninstall": []
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}

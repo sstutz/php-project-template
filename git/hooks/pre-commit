@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+# Check if this is the initial commit
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+    against=HEAD
+else
+    against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+nc="$(tput sgr0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+blue="$(tput setaf 4)"
+src="./src"
+dockerRun="docker run --rm -i -v $(git rev-parse --show-toplevel):/var/www/html app/php:7.2-fpm bash -c"
+vbin="/var/www/html/vendor/bin"
+
+declare -i returnCode=0
+
+finalize() {
+    if [[ "${returnCode}" -ne 0 ]]; then
+        warn "Aborting commit"
+    else
+        info "Proceeding with commit"
+        echo
+    fi
+}
+trap finalize EXIT
+
+abort() {
+    local rc=${1:-1}
+    returnCode="${rc}"
+    exit "${rc}"
+}
+
+warn() {
+    printf " [${red}Warn${nc}] %s\n" "$1" >&2
+}
+
+success () {
+    printf " [${green} OK ${nc}] %s\n" "$1"
+}
+
+info() {
+    printf " [${blue} .. ${nc}] %s\n" "$1"
+}
+
+fix_alignment() {
+    # remove variable alignment
+    info "Check for unnecessary alignment whitespaces ..."
+    local OUT=$(find "$src" -type f -name "*.php" -exec grep -Pn "\s\s+=" {} \+);
+    if [ $(echo -n "${OUT}" | head -c1 | wc -c) -ne 0 ]; then
+        warn "unnecessary alignment attempt detected, remove to commit"
+        echo "${OUT}"
+        abort
+    fi
+    success "No unnecessary alignment found."
+}
+
+remove_blank_lines() {
+    # remove all blank lines but one
+    info "Check for unnecessary blank lines ..."
+    local OUT=$(find "$src" -name "*.php" -type f \! -exec sed -n '/./,/^$/!{q1}' {} \; -print)
+    if [ $(echo -n "${OUT}" | head -c1 | wc -c) -ne 0 ]; then
+        warn "unnecessary blank lines detected, remove to commit"
+        echo "${OUT}"
+        abort
+    fi
+    success "No unnecessary blank lines detected."
+}
+
+run_phpcs() {
+    PHP_CS_OUTPUT=$(eval "$dockerRun \"php $vbin/phpcs -n\"")
+    if [ $(echo -n "${PHP_CS_OUTPUT}" | head -c1 | wc -c) -ne 0 ]; then
+      echo "${PHP_CS_OUTPUT}"
+      warn "phpcs Linting failed! Fix the errors above to commit."
+      abort
+    fi
+    success "phpcs passed!"
+}
+
+run_php_cs_fixer() {
+    PHP_CS_FIXER_OUTPUT=$(eval "$dockerRun \"php -n $vbin/php-cs-fixer fix --dry-run -vv 2>&1\"")
+    if [ $? -ne 0 ]; then
+      echo "${PHP_CS_FIXER_OUTPUT}"
+      warn "php-cs-fixer Linting failed! Fix the errors above to commit."
+      abort
+    fi
+    success "php-cs-fixer passed!"
+}
+
+ensure_code_standard() {
+    info "Running Code Sniffers ..."
+    run_phpcs
+    run_php_cs_fixer
+}
+
+run_php_unit() {
+    local LOG="/tmp/phpunit_output_$(date +%s).log"
+    local PHP_UNIT_OUTPUT
+    local RC
+
+    for testsuite in unittest; do
+        info "Starting $testsuite tests for ${PWD##*/}"
+        PHP_UNIT_OUTPUT=$(make $testsuite)
+        RC=$?
+
+        echo "${PHP_UNIT_OUTPUT}" > "${LOG}"
+        if [[ "${RC}" -ne 0 ]]; then
+            while read -r line; do
+              if [[ "${line}" =~ Failures: ]] ; then
+                summary="${line}"
+                break
+              fi
+            done <<<"{$PHP_UNIT_OUTPUT}"
+
+            warn "Test suite failed"
+            info "${summary}"
+            info "The full output of phpunit has been saved in:"
+            info "  ${LOG}"
+            abort "${RC}"
+        fi
+    done
+    success "All tests passed. The full output of phpunit has been saved in:"
+    info "  ${LOG}"
+}
+
+if [[ $* != *--notest* ]]; then
+    run_php_unit
+fi
+
+fix_alignment
+remove_blank_lines
+ensure_code_standard
