@@ -1,10 +1,9 @@
 FROM php:7.2-fpm-alpine AS base
 
-run apk update && \
-    apk add --no-cache bash git curl
+run apk add --no-cache bash git curl
 
 FROM base AS deps
-run apk add --no-cache $PHPIZE_DEPS coreutils
+RUN apk add --no-cache $PHPIZE_DEPS coreutils
 RUN pecl install xdebug-2.6.0 ast-0.1.6
 
 # Install Composer
