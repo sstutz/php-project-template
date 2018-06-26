@@ -7,6 +7,9 @@
     <!-- The PSR-2 coding standard -->
     <rule ref="PSR2" />
 
+    <!-- The PSR-12 coding standard -->
+    <rule ref="PSR12" />
+
     <!-- Ensures that array are indented one tab stop -->
     <rule ref="Generic.Arrays.ArrayIndent" />
 
@@ -54,9 +57,6 @@
 
     <!-- The use of eval() is discouraged -->
     <rule ref="Squiz.PHP.Eval" />
-
-    <!-- Discourages the use of alias functions that are kept in PHP for compatibility with older versions -->
-    <rule ref="Squiz.PHP.ForbiddenFunctions" />
 
     <!-- Stops the usage of the "global" keyword -->
     <rule ref="Squiz.PHP.GlobalKeyword" />
