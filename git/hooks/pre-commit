@@ -125,10 +125,11 @@ run_php_unit() {
     info "  ${LOG}"
 }
 
+fix_alignment
+remove_blank_lines
+ensure_code_standard
+
 if [[ $* != *--notest* ]]; then
     run_php_unit
 fi
 
-fix_alignment
-remove_blank_lines
-ensure_code_standard
