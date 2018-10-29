@@ -46,7 +46,9 @@ $rules = [
             'destruct',
             'method',
             'magic',
-        ]
+        ],
+       'sortAlgorithm' => 'alpha'
+
     ],
     'ordered_imports' => ['sortAlgorithm' => 'alpha'],
     'self_accessor' => true,
