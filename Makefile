@@ -1,5 +1,6 @@
 .DEFAULT_GOAL := all
 
+ENV=development
 PWD=$(shell pwd)
 PHP=docker run --rm -i -v ~/.composer:/root/.composer -v $(PWD):/var/www/html app/php:7.2-fpm bash -c
 
@@ -34,3 +35,5 @@ validate:
 delete-deps:
 	$(PHP) "rm -rf vendor"
 
+clean:
+	$(PHP) "rm -rf build"
