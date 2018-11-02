@@ -1,19 +1,20 @@
 {
-	"name": "sstutz/php-boilerplate",
-	"description": "PHP Boilerplate",
-	"keywords": [],
-	"license": "MIT",
-	"type": "project",
+    "name": "sstutz/php-boilerplate",
+    "description": "PHP Boilerplate",
+    "keywords": [],
+    "license": "MIT",
+    "type": "project",
     "require": {
         "php": ">=7.2.0"
     },
     "require-dev": {
         "ext-ast": "*",
         "friendsofphp/php-cs-fixer": "^2.11",
-        "infection/infection": "^0.8.2",
-        "phan/phan": "^0.12.10",
+        "infection/infection": "^0.10.6",
+        "phan/phan": "^1.1.0",
         "phpmd/phpmd": "^2.6",
-        "phpunit/phpunit": "^7.1",
+        "phpunit/phpunit": "^7.4",
+        "roave/security-advisories": "dev-master",
         "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {

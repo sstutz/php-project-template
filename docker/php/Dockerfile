@@ -1,10 +1,10 @@
 FROM php:7.2-fpm-alpine AS base
 
-run apk add --no-cache bash git curl
+RUN apk add --no-cache bash git curl
 
 FROM base AS deps
-RUN apk add --no-cache $PHPIZE_DEPS coreutils
-RUN pecl install xdebug-2.6.0 ast-0.1.6
+RUN apk add --no-cache $PHPIZE_DEPS coreutils php7-pcntl
+RUN pecl install xdebug-2.6.1 ast-1.0.0
 
 # Install Composer
 RUN echo "$(curl -sS https://composer.github.io/installer.sig) -" > composer-setup.php.sig \
