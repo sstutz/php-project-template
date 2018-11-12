@@ -18,13 +18,13 @@ install:
 test: unittest
 
 unittest:
-	$(PHP) "APP_ENV=testing ./vendor/bin/phpunit --testsuite=unit --no-coverage"
+	$(PHP) "APP_ENV=testing phpdbg-noxdebug -qrr ./vendor/bin/phpunit --testsuite=unit --no-coverage"
 
 testcoverage:
-	$(PHP) "APP_ENV=testing ./vendor/bin/phpunit"
+	$(PHP) "APP_ENV=testing phpdbg-noxdebug -qrr ./vendor/bin/phpunit"
 
 infection:
-	$(PHP) "phpdbg -qrr /var/www/html/vendor/bin/infection"
+	$(PHP) "phpdbg-noxdebug -qrr /var/www/html/vendor/bin/infection"
 
 lint:
 	.git/hooks/pre-commit --notest

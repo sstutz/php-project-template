@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+xdebugConfig="$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini";
+
+if [[ ! -f "$xdebugConfig" ]]; then
+    usr/local/bin/phpdbg "$@"
+    exit 0
+fi
+
+sed -i 's/zend_/;zend_/' "$xdebugConfig"
+/usr/local/bin/phpdbg "$@"
+sed -i 's/;//' "$xdebugConfig"
