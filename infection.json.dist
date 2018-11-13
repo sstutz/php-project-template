@@ -6,9 +6,9 @@
             ]
         },
         "logs": {
-            "text": "build/infection/infection-log.txt",
-            "summary": "build/infection/summary-log.txt",
-            "debug": "build/infection/debug-log.txt"
+            "text": "build/infection/infection.log",
+            "summary": "build/infection/summary.log",
+            "debug": "build/infection/debug.log"
         },
         "tmpDir": "build/infection/temp",
         "phpUnit": {
